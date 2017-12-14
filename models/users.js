@@ -3,10 +3,10 @@ var mysql = require('mysql'),
     //creamos la conexion a nuestra base de datos con los datos de acceso de cada uno
     connection = mysql.createConnection(
         {
-            host: 'localhost',
-            user: 'root',
-            password: 'root',
-            database: 'database_ej'
+            host: '192.168.10.64',
+            user: 'sige',
+            password: 'sige',
+            database: 'sam'
         }
     );
 
@@ -58,7 +58,7 @@ userModel.insertUser = function (userData, callback) {
                 }
                 else {
                     //devolvemos la última id insertada
-                    
+
                     callback(null, { "insertId": result.insertId });
                 }
             });
@@ -71,27 +71,25 @@ userModel.updateUser = function (userData, callback) {
         console.log('Actualizar usuario');
         connection.query('UPDATE users SET username= ?, email= ? where id = ?',
             [userData.username, userData.email, userData.id],
-           /* function (error, result) {
+            /* function (error, result) {
+                 if (error) {
+                     throw error;
+                 }
+                 else {
+                     callback(null, { "Updated": result.Updated });    
+                 }
+             });*/
+            connection.query(sql, function (error, result) {
                 if (error) {
                     throw error;
+                    console.log('error al actualizar usuario');
                 }
                 else {
-                    callback(null, { "Updated": result.Updated });    
+                    callback(null, { "msg": "success" });
+                    console.log('usuario actualizado');
                 }
-            });*/
-            connection.query(sql, function(error, result)
-            {
-                if(error)
-            {
-                throw error;
-                console.log('error al actualizar usuario');
-            }
-            else {
-                callback(null,{"msg":"success"});
-                console.log('usuario actualizado');
-            }
             }));
-        }
+    }
 }
 
 //eliminar un usuario pasando la id a eliminar ///////////////////////
@@ -117,7 +115,24 @@ userModel.deleteUser = function (id, callback) {
             }
         });
     }
+
 }
+
+userModel.getContaminants = function (callback) {
+    if (connection) {
+        connection.query('SELECT * FROM contaminant_d ORDER BY id_contaminant_d', function (error, rows) {
+            if (error) {
+                throw error;
+            }
+            else {
+                console.log(JSON.stringify(rows));
+                callback(null, rows);
+            }
+        });
+    }
+}
+
+
 
 //exportamos el objeto para tenerlo disponible en la zona de rutas
 module.exports = userModel;

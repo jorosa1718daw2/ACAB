@@ -172,4 +172,14 @@ module.exports = function(app)
 		res.json(500,{"msg":"Error, Catch"});	
 	} 
 });
+
+
+app.get("/contaminants", function(req,res){
+	console.log('SHOW CONTAMINANTS');
+	UserModel.getContaminants(function(error, data)
+	{
+		res.json(200,data);
+	});
+});
+
 }
